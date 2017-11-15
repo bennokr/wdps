@@ -2,7 +2,7 @@ from pyspark import SparkContext
 import sys
 import collections
 
-sc = SparkContext("local", "wdps16XX")
+sc = SparkContext("yarn", "wdps17XX")
 
 record_attribute = sys.argv[1]
 in_file = sys.argv[2]
