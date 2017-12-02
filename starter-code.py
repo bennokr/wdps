@@ -6,6 +6,7 @@ sc = SparkContext("yarn", "wdps17XX")
 
 record_attribute = sys.argv[1]
 in_file = sys.argv[2]
+out_file = sys.argv[3]
 
 rdd = sc.newAPIHadoopFile(in_file,
     "org.apache.hadoop.mapreduce.lib.input.TextInputFormat",
@@ -26,4 +27,4 @@ def find_google(record):
 
 rdd = rdd.flatMap(find_google)
 
-print('\n'.join(rdd.collect()))
+rdd = rdd.saveAsTextFile(out_file)

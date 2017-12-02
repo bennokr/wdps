@@ -10,4 +10,27 @@ The input data is a gzipped [WARC file](https://en.wikipedia.org/wiki/Web_ARChiv
 
 You will be graded based on whether your solution conforms to the assignment, on its scalability and on its [F1 score](https://en.wikipedia.org/wiki/F1_score). A script to calculate this score using gold standard data and the prediction data is in the same folder as the format sample data. An input file for you to work with (from [CommonCrawl](http://commoncrawl.org)) is on the Hadoop file system of DAS-4, at hdfs:///user/bbkruit/CC-MAIN-20160924173739-00000-ip-10-143-35-109.ec2.internal.warc.gz . You can view it using hdfs `dfs -cat hdfs:///user/bbkruit/CC-MAIN-20160924173739-00000-ip-10-143-35-109.ec2.internal.warc.gz | zcat | less` (see also https://hadoop.apache.org/docs/r2.7.2/hadoop-project-dist/hadoop-common/FileSystemShell.html). We will be running your program on a different web archive dataset with a different WARC key name (something other than "WARC-Record-ID").
 
-We have set up two REST services for you to use on the DAS-4 cluster. One is an [Elasticsearch](https://www.elastic.co/guide/en/elasticsearch/reference/2.4/index.html) instance that contains labels for Freebase IDs. It can be accessed from the command line like this: `curl "http://10.149.0.127:9200/freebase/label/_search?q=obama"` . The other is a SPARQL endpoint that can be accessed like this: `curl -s -XPOST "http://localhost:5210/sparql" -d "print=true&query=select+distinct+%3FConcept+where+%7B%5B%5D+a+%3FConcept%7D+LIMIT+100"`. To experiment with some sparql examples, see https://query.wikidata.org/ . This one is not yet available on DAS-4, but we will let you know when it is. Both services return JSON. Because Freebase was integrated into the Google Knowledge Graph, you can look up IDs on Google using URLs like this: [http://g.co/kg/m/03hrz].
+We have set up two REST services for you to use on the DAS-4 cluster. One is an [Elasticsearch](https://www.elastic.co/guide/en/elasticsearch/reference/2.4/index.html) instance that contains labels for Freebase IDs. It can be accessed from the command line like this: `curl "http://10.149.0.127:9200/freebase/label/_search?q=obama"` . The other is a SPARQL endpoint that can be accessed like this: `curl -XPOST -s 'http://10.141.0.11:8082/sparql' -d "print=true&query=SELECT * WHERE { ?s ?p ?o . } LIMIT 10"`.  We have loaded DBpedia, YAGO, Freebase and Wikidata. To experiment with some sparql examples, see https://query.wikidata.org/ . Both services return JSON. Because Freebase was integrated into the Google Knowledge Graph, you can look up IDs on Google using URLs like this: [http://g.co/kg/m/03hrz].
+
+
+# Frequently Asked Questions
+
+## How do we use a python virtual environment in Spark YARN cluster mode?
+I have added `run_venv.sh`, which shows how to package up a virtual environment for cluster usage, inspired by [this webpage](http://henning.kropponline.de/2016/09/17/running-pyspark-with-virtualenv/) that has more information. The crucial step is to make it "relocatable", which turns all absolute paths into relative ones.
+
+## How can we get more results from Freebase?
+You can increase the number of results with the "size" parameter (see [Elasticsearch documentation](https://www.elastic.co/guide/en/elasticsearch/reference/2.4/index.html)), and you can look up which entity is probably the Obama that is meant by querying the SPARQL endpoint (e.g. which entity has the most facts about it). E.g. `curl -s "http://10.149.0.127:9200/freebase/label/_search?q=obama&size=1000"` .
+
+## Why doesn't this SPARQL query work?
+Not all SPARQL features are implemented in Trident. In particular, string filtering functions are not present (such as `langMatches`). Instead, try to write SPARQL queries with possibly many results, and filter them in your own code.
+
+## What should we write in the README of our submission?
+Please describe briefly how your system works, which existing tools you have used and why, and how to run your solution.
+
+## We have reached out disk quota on DAS-4, what do we do?
+You can use the larger scratch disk on `/var/scratch/wdps17XX`.
+
+## Should we detect entities in non-English text?
+No, you only have to detect entities in English text.
+
+
