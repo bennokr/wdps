@@ -1,30 +1,38 @@
-from pyspark import SparkContext
-import sys
-import collections
 
-sc = SparkContext("yarn", "wdps17XX")
+KEYNAME = "WARC-TREC-ID"
 
-record_attribute = sys.argv[1]
-in_file = sys.argv[2]
-out_file = sys.argv[3]
-
-rdd = sc.newAPIHadoopFile(in_file,
-    "org.apache.hadoop.mapreduce.lib.input.TextInputFormat",
-    "org.apache.hadoop.io.LongWritable",
-    "org.apache.hadoop.io.Text",
-    conf={"textinputformat.record.delimiter": "WARC/1.0"})
-
-def find_google(record):
-    # finds google
-    _, payload = record
+def find_labels(payload, labels):
     key = None
     for line in payload.splitlines():
-        if line.startswith(record_attribute):
+        if line.startswith(KEYNAME):
             key = line.split(': ')[1]
             break
-    if key and ('Google' in payload):
-        yield key + '\t' + 'Google' + '\t' + '/m/045c7b'
+    for label, freebase_id in labels.items():
+        if key and (label in payload):
+            yield key, label, freebase_id
 
-rdd = rdd.flatMap(find_google)
 
-rdd = rdd.saveAsTextFile(out_file)
+
+def split_records(stream):
+    payload = ''
+    for line in stream:
+        if line.strip() == "WARC/1.0":
+            yield payload
+            payload = ''
+        else:
+            payload += line
+
+if __name__ == '__main__':
+    import sys
+    try:
+        _, INPUT = sys.argv
+    except Exception as e:
+        print('Usage: python starter-code.py INPUT')
+        sys.exit(0)
+
+    cheats = dict((line.split('\t',2) for line in open('data/sample-labels-cheat.txt').read().splitlines()))
+
+    with open(INPUT, errors='ignore') as fo:
+        for record in split_records(fo):
+            for key, label, freebase_id in find_labels(record, cheats):
+                print(key + '\t' + label + '\t' + freebase_id)
