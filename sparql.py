@@ -2,7 +2,7 @@ import requests
 
 def sparql(domain, query):
     url = 'http://%s/sparql' % domain
-    response = requests.post(url, data={'print': False, 'query': query})
+    response = requests.post(url, data={'print': True, 'query': query})
     if response:
         response = response.json()
         print(response)
