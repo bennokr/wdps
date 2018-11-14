@@ -4,8 +4,12 @@ def sparql(domain, query):
     url = 'http://%s/sparql' % domain
     response = requests.post(url, data={'print': True, 'query': query})
     if response:
-        response = response.json()
-        print(response)
+        try:
+            response = response.json()
+            print(response)
+        except Exception as e:
+            print(reponse)
+            raise e
 
 if __name__ == '__main__':
     import sys
