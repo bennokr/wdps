@@ -7,8 +7,6 @@ ES_NODE=$(cat .es_node | grep '^:' | grep -oP '(node...)')
 ES_PID=$!
 echo "elasticsearch should be running now on node $ES_NODE:$ES_PORT (connected to process $ES_PID)"
 
-source venv/bin/activate
 python3 elasticsearch.py $ES_NODE:$ES_PORT "Vrije Universiteit Amsterdam"
-deactivate
 
 kill $ES_PID

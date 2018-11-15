@@ -9,8 +9,6 @@ KB_NODE=$(cat .kb_node | grep '^:' | grep -oP '(node...)')
 KB_PID=$!
 echo "trident should be running now on node $KB_NODE:$KB_PORT (connected to process $KB_PID)"
 
-source venv/bin/activate
 python3 sparql.py $KB_NODE:$KB_PORT "select * where {?s ?p ?o} limit 10"
-deactivate
 
 kill $KB_PID
