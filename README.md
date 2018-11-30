@@ -17,6 +17,7 @@ We have set up two REST services for you to use on the DAS-4 cluster. You can st
 
 ## How do we use a python virtual environment in Spark YARN cluster mode?
 I have added `spark_sample_venv.sh`, which shows how to package up a virtual environment for cluster usage, inspired by [this webpage](http://henning.kropponline.de/2016/09/17/running-pyspark-with-virtualenv/) that has more information. The crucial step is to make it "relocatable", which turns all absolute paths into relative ones.
+To use python3, you will need to follow the steps described [here](https://community.hortonworks.com/articles/58418/running-pyspark-with-conda-env.html).
 
 ## How can we get more results from Freebase?
 You can increase the number of results with the "size" parameter (see [Elasticsearch documentation](https://www.elastic.co/guide/en/elasticsearch/reference/2.4/index.html)), and you can look up which entity is probably the Obama that is meant by querying the SPARQL endpoint (e.g. which entity has the most facts about it). E.g. `curl -s "http://10.149.0.127:9200/freebase/label/_search?q=obama&size=1000"` .
