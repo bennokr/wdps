@@ -1,4 +1,4 @@
-import requests
+import requests, json
 
 def sparql(domain, query):
     url = 'http://%s/sparql' % domain
@@ -6,7 +6,7 @@ def sparql(domain, query):
     if response:
         try:
             response = response.json()
-            print(response)
+            print(json.dumps(response, indent=2))
         except Exception as e:
             print(reponse)
             raise e

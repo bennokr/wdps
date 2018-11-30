@@ -10,7 +10,7 @@ KB_PID=$!
 echo "trident should be running now on node $KB_NODE:$KB_PORT (connected to process $KB_PID)"
 
 source venv/bin/activate
-python3 sparql.py $KB_NODE:$KB_PORT "select * where {?s ?p ?o} limit 10"
+python3 sparql.py $KB_NODE:$KB_PORT "select * where {<http://rdf.freebase.com/ns/m.01cx6d_> ?p ?o} limit 100"
 deactivate
 
 kill $KB_PID
