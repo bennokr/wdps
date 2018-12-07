@@ -1,5 +1,5 @@
 ES_PORT=9200
-ES_BIN=/home/bbkruit/scratch/wdps/elasticsearch-2.4.1/bin/elasticsearch
+ES_BIN=$(realpath ~/scratch/elasticsearch-2.4.1/bin/elasticsearch)
 
 prun -o .es_log -v -np 1 ESPORT=$ES_PORT $ES_BIN </dev/null 2> .es_node &
 echo "waiting 15 seconds for elasticsearch to set up..."
